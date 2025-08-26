@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h2>My Prescriptions</h2>
+</div>
+
+<a href="{% url 'accounts:patient_dashboard' %}" class="btn btn-secondary mb-3">Back</a>
+
+<table class="styled-table">
+  <thead>
+    <tr>
+      <th>Medication</th>
+      <th>Quantity</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for pres in prescriptions %}
+      <tr>
+        <td>{{ pres.medication.name }}</td>
+        <td>{{ pres.quantity }}</td>
+        <td>
+          {% if pres.is_active %}
+            <span class="badge bg-success">Active</span>
+          {% else %}
+            <span class="badge bg-secondary">Used</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if pres.is_active %}
+            <a href="{% url 'pharmacy:buy_from_prescription' pres.id %}" class="btn btn-sm btn-primary">Buy</a>
+          {% else %}
+            <span class="text-muted">—</span>
+          {% endif %}
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4" class="no-data">No prescriptions found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

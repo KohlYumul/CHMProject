@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="confirm-container danger">
+    <h2>Delete Medication</h2>
+    <p>Are you sure you want to delete "<strong>{{ medication.name }}</strong>"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+        <a href="{% url 'inventory:medication_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

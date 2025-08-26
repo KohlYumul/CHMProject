@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header mb-4">
+    <h2>
+        {% if patient %}Edit Patient Profile{% else %}Add Patient Profile{% endif %}
+    </h2>
+</div>
+
+<div class="form-container card shadow-sm p-4">
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Only show user field on create -->
+        {% if not patient %}
+            <div class="form-group mb-3">
+                {{ form.user.label_tag }}
+                {{ form.user }}
+                {% if form.user.errors %}
+                    <div class="text-danger">{{ form.user.errors }}</div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <!-- Date of Birth -->
+        <div class="form-group mb-3">
+            {{ form.date_of_birth.label_tag }}
+            {{ form.date_of_birth }}
+            {% if form.date_of_birth.errors %}
+                <div class="text-danger">{{ form.date_of_birth.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Gender -->
+        <div class="form-group mb-3">
+            {{ form.gender.label_tag }}
+            {{ form.gender }}
+            {% if form.gender.errors %}
+                <div class="text-danger">{{ form.gender.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Blood Type -->
+        <div class="form-group mb-3">
+            {{ form.blood_type.label_tag }}
+            {{ form.blood_type }}
+            {% if form.blood_type.errors %}
+                <div class="text-danger">{{ form.blood_type.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Phone Number -->
+        <div class="form-group mb-3">
+            {{ form.phone_number.label_tag }}
+            {{ form.phone_number }}
+            {% if form.phone_number.errors %}
+                <div class="text-danger">{{ form.phone_number.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Address -->
+        <div class="form-group mb-3">
+            {{ form.address.label_tag }}
+            {{ form.address }}
+            {% if form.address.errors %}
+                <div class="text-danger">{{ form.address.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Allergies -->
+        <div class="form-group mb-3">
+            {{ form.allergies.label_tag }}
+            {{ form.allergies }}
+            {% if form.allergies.errors %}
+                <div class="text-danger">{{ form.allergies.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Chronic Conditions -->
+        <div class="form-group mb-3">
+            {{ form.chronic_conditions.label_tag }}
+            {{ form.chronic_conditions }}
+            {% if form.chronic_conditions.errors %}
+                <div class="text-danger">{{ form.chronic_conditions.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Medications -->
+        <div class="form-group mb-3">
+            {{ form.medications.label_tag }}
+            {{ form.medications }}
+            {% if form.medications.errors %}
+                <div class="text-danger">{{ form.medications.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Emergency Contact Name -->
+        <div class="form-group mb-3">
+            {{ form.emergency_contact_name.label_tag }}
+            {{ form.emergency_contact_name }}
+            {% if form.emergency_contact_name.errors %}
+                <div class="text-danger">{{ form.emergency_contact_name.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Emergency Contact Number -->
+        <div class="form-group mb-3">
+            {{ form.emergency_contact_number.label_tag }}
+            {{ form.emergency_contact_number }}
+            {% if form.emergency_contact_number.errors %}
+                <div class="text-danger">{{ form.emergency_contact_number.errors }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Emergency Contact Relation -->
+        <div class="form-group mb-3">
+            {{ form.emergency_contact_relation.label_tag }}
+            {{ form.emergency_contact_relation }}
+            {% if form.emergency_contact_relation.errors %}
+                <div class="text-danger">{{ form.emergency_contact_relation.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-actions d-flex gap-2">
+            <button type="submit" class="btn btn-primary">💾 Save</button>
+            {% if hospital_id %}
+                <a href="{% url 'patients:patient_list' %}?hospital_id={{ hospital_id }}" class="btn btn-secondary">← Back to List</a>
+            {% else %}
+                <a href="{% url 'patients:patient_list' %}" class="btn btn-secondary">← Back to List</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<!-- Optional: Flatpickr JS for nicer date selection -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        flatpickr("input[name='date_of_birth']", {
+            dateFormat: "Y-m-d",
+            maxDate: "today",
+            altInput: true,
+            altFormat: "F j, Y",
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ hospital.name }} – Overview</h2>
+        <a href="{% url 'accounts:admin_dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card text-center border-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Staff</h5>
+                    <h3>{{ staff_count }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center border-success">
+                <div class="card-body">
+                    <h5 class="card-title">Patients</h5>
+                    <h3>{{ patient_count }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-center border-info">
+                <div class="card-body">
+                    <h6 class="card-title">Equipment</h6>
+                    <h3>{{ equipment_count }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-center border-warning">
+                <div class="card-body">
+                    <h6 class="card-title">Supplies</h6>
+                    <h3>{{ supply_count }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-center border-danger">
+                <div class="card-body">
+                    <h6 class="card-title">Medications</h6>
+                    <h3>{{ medication_count }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Latest Patients -->
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <strong>Latest Patients</strong>
+        </div>
+        <div class="card-body p-0">
+            {% if latest_patients %}
+                <table class="table table-striped table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Date Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for patient in latest_patients %}
+                            <tr>
+                                <td>{{ patient.first_name }} {{ patient.last_name }}</td>
+                                <td>{{ patient.email }}</td>
+                                <td>{{ patient.date_joined|date:"M d, Y" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="m-3 text-muted">No patients found for this hospital.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="card">
+        <div class="card-header bg-light">
+            <strong>Quick Links</strong>
+        </div>
+        <div class="card-body">
+            <a href="{% url 'accounts:user_list' %}?hospital_id={{ hospital.id }}" 
+            class="btn btn-outline-dark btn-sm me-2">View Users</a>
+            <a href="{% url 'inventory:equipment_list' %}?hospital_id={{ hospital.id }}" 
+            class="btn btn-outline-primary btn-sm me-2">Manage Equipment</a>
+            <a href="{% url 'patients:patient_list' %}?hospital_id={{ hospital.id }}" 
+            class="btn btn-outline-success btn-sm me-2">View Patient Profiles</a>
+            <a href="{% url 'inventory:supply_list' %}?hospital_id={{ hospital.id }}" 
+            class="btn btn-outline-warning btn-sm me-2">Manage Supplies</a>
+            <a href="{% url 'inventory:medication_list' %}?hospital_id={{ hospital.id }}" 
+            class="btn btn-outline-danger btn-sm me-2">Manage Medications</a>
+            <a href="{% url 'reports:report_list' %}?hospital_id={{ hospital.id }}" 
+            class="btn btn-outline-secondary btn-sm">View Reports</a>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

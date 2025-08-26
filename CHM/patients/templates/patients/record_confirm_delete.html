@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h2>Delete Record</h2>
+</div>
+
+<div class="confirm-box">
+  <p>Are you sure you want to delete "<strong>{{ record.title }}</strong>"?</p>
+  <form method="post" class="form-actions">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">🗑 Confirm Delete</button>
+    <a href="{% url 'patients:record_list' %}{% if hospital_id %}?hospital_id={{ hospital_id }}{% endif %}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        Medical Supplies
+        {% if hospital %}
+            – {{ hospital.name }}
+        {% endif %}
+    </h2>
+    <div class="d-flex gap-2">
+        {% if hospital %}
+            {% if user.role == "Admin" %}
+                <a href="{% url 'hospitals:hospital_overview' hospital.id %}" class="btn btn-secondary">Return to Overview</a>
+            {% elif user.role == "Staff" %}
+                <a href="{% url 'accounts:staff_dashboard' %}" class="btn btn-secondary">Return to Dashboard</a>
+            {% endif %}
+        {% endif %}
+
+        {% if user.role == "Admin" or user.role == "Staff" %}
+            {% if hospital %}
+                <a href="{% url 'inventory:supply_create' %}?hospital_id={{ hospital.id }}" class="btn btn-primary">+ Add Supply</a>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    {% for supply in supplies %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ supply.name }}</h5>
+                    <p class="card-text text-muted">{{ supply.description }}</p>
+                    <p><strong>Quantity:</strong> {{ supply.quantity }}</p>
+                </div>
+                {% if user.role == "Admin" or user.role == "Staff" %}
+                    <div class="card-footer d-flex justify-content-between">
+                        {% if hospital %}
+                            <a class="btn btn-sm btn-outline-secondary" href="{% url 'inventory:supply_update' supply.pk %}?hospital_id={{ hospital.id }}">Edit</a>
+                            <a class="btn btn-sm btn-danger" href="{% url 'inventory:supply_delete' supply.pk %}?hospital_id={{ hospital.id }}">Delete</a>
+                        {% else %}
+                            <a class="btn btn-sm btn-outline-secondary" href="{% url 'inventory:supply_update' supply.pk %}">Edit</a>
+                            <a class="btn btn-sm btn-danger" href="{% url 'inventory:supply_delete' supply.pk %}">Delete</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <p>No supplies available{% if hospital %} for {{ hospital.name }}{% endif %}.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

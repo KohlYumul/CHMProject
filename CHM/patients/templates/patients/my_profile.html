@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="profile-container">
+  <h2>My Profile</h2>
+  <p><strong>Name:</strong> {{ profile.user.first_name }} {{ profile.user.last_name }}</p>
+  <p><strong>Email:</strong> {{ profile.user.email }}</p>
+  <p><strong>Phone:</strong> {{ profile.phone_number }}</p>
+  <p><strong>Address:</strong> {{ profile.address }}</p>
+  <p><strong>Date of Birth:</strong> {{ profile.date_of_birth }}</p>
+  <p><strong>Gender:</strong> {{ profile.gender }}</p>
+  <p><strong>Blood Type:</strong> {{ profile.blood_type }}</p>
+
+  <h3>Medical Information</h3>
+  <p><strong>Allergies:</strong> {{ profile.allergies }}</p>
+  <p><strong>Chronic Conditions:</strong> {{ profile.chronic_conditions }}</p>
+  <p><strong>Medications:</strong> {{ profile.medications }}</p>
+
+  <h3>Emergency Contact</h3>
+  <p><strong>Name:</strong> {{ profile.emergency_contact_name }}</p>
+  <p><strong>Relation:</strong> {{ profile.emergency_contact_relation }}</p>
+  <p><strong>Phone:</strong> {{ profile.emergency_contact_number }}</p>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h2>Purchase from Prescription</h2>
+</div>
+
+<a href="{% url 'pharmacy:my_prescriptions' %}" class="btn btn-secondary mb-3">Back</a>
+
+<div class="confirm-box">
+  <p>You are about to buy <strong>{{ prescription.quantity }} x {{ medication.name }}</strong></p>
+  <p>Total Price: ₱{{ total_price }}</p>
+
+  {% if not purchase_success %}
+  <form method="post" class="form-actions">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Confirm Purchase</button>
+    <a href="{% url 'pharmacy:my_prescriptions' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+  {% endif %}
+</div>
+
+{% if purchase_success %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    alert("Successfully purchased {{ prescription.quantity }} x {{ medication.name }} for ₱{{ total_price }}. Prescription marked as used.");
+    window.location.href = "{{ redirect_url }}";  // Redirect after closing alert
+});
+</script>
+{% endif %}
+
+{% endblock %}

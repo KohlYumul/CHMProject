@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-container">
+  <h2>
+    {% if form.instance.pk %}
+      Edit Report
+    {% else %}
+      Add New Report
+    {% endif %}
+  </h2>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-group">
+      {{ form.title.label_tag }}
+      {{ form.title }}
+    </div>
+
+    <div class="form-group">
+      {{ form.description.label_tag }}
+      {{ form.description }}
+    </div>
+
+    <div class="form-group">
+      {{ form.file.label_tag }}
+      {{ form.file }}
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Save</button>
+
+      {% if user.role == "Staff" %}
+        <a href="{% url 'reports:report_list' %}" class="btn btn-secondary">Back to Reports</a>
+      {% elif user.role == "Admin" and hospital %}
+        <a href="{% url 'reports:report_list' %}?hospital_id={{ hospital.id }}" class="btn btn-secondary">Back to Reports</a>
+      {% else %}
+        <a href="{% url 'reports:report_list' %}" class="btn btn-secondary">Back to Reports</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}

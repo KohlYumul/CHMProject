@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h2>Delete Report</h2>
+</div>
+
+<div class="confirm-box">
+  <p>Are you sure you want to delete "<strong>{{ report.title }}</strong>"?</p>
+  <form method="post" class="form-actions">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, delete</button>
+    {% if user.role == "Staff" %}
+      <a href="{% url 'reports:report_list' %}" class="btn btn-secondary">Cancel</a>
+    {% elif user.role == "Admin" and hospital %}
+      <a href="{% url 'reports:report_list' %}?hospital_id={{ hospital.id }}" class="btn btn-secondary">Cancel</a>
+    {% else %}
+      <a href="{% url 'reports:report_list' %}" class="btn btn-secondary">Cancel</a>
+    {% endif %}
+  </form>
+</div>
+{% endblock %}

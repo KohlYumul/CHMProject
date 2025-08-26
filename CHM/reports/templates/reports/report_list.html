@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2>
+    Reports
+    {% if hospital %}
+      – {{ hospital.name }}
+    {% endif %}
+  </h2>
+  <div class="d-flex gap-2">
+    {% if hospital and user.role == "Admin" %}
+      <a href="{% url 'hospitals:hospital_overview' hospital.id %}" class="btn btn-secondary">
+        Return to Overview
+      </a>
+    {% elif user.role == "Staff" %}
+      <a href="{% url 'accounts:staff_dashboard' %}" class="btn btn-secondary">
+        Return to Dashboard
+      </a>
+    {% endif %}
+
+    {% if user.role == "Admin" and hospital %}
+      <a href="{% url 'reports:report_create' %}?hospital_id={{ hospital.id }}" class="btn btn-primary">
+        + Add New Report
+      </a>
+    {% elif user.role == "Staff" %}
+      <a href="{% url 'reports:report_create' %}" class="btn btn-primary">
+        + Add New Report
+      </a>
+    {% endif %}
+  </div>
+</div>
+
+{% if reports %}
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>File</th>
+        {% if user.role == "Admin" or user.role == "Staff" %}
+          <th>Actions</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for report in reports %}
+        <tr>
+          <td>{{ report.title }}</td>
+          <td>{{ report.description|truncatewords:15 }}</td>
+          <td>
+            {% if report.file %}
+              <a href="{{ report.file.url }}" class="btn btn-secondary btn-sm">Download</a>
+            {% else %}
+              <span class="text-muted">No file</span>
+            {% endif %}
+          </td>
+          {% if user.role == "Admin" or user.role == "Staff" %}
+            <td class="table-actions">
+              {% if user.role == "Admin" and hospital %}
+                <a href="{% url 'reports:report_update' report.pk %}?hospital_id={{ hospital.id }}" class="btn btn-secondary btn-sm">Edit</a>
+                <a href="{% url 'reports:report_delete' report.pk %}?hospital_id={{ hospital.id }}" class="btn btn-danger btn-sm">Delete</a>
+              {% else %}
+                <a href="{% url 'reports:report_update' report.pk %}" class="btn btn-secondary btn-sm">Edit</a>
+                <a href="{% url 'reports:report_delete' report.pk %}" class="btn btn-danger btn-sm">Delete</a>
+              {% endif %}
+            </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p class="no-data">
+    No reports found{% if hospital %} for {{ hospital.name }}{% endif %}.
+  </p>
+{% endif %}
+{% endblock %}

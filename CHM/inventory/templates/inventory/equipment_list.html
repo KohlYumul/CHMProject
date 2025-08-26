@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        Medical Equipment
+        {% if hospital %}
+            – {{ hospital.name }}
+        {% endif %}
+    </h2>
+    <div class="d-flex gap-2">
+        {% if hospital %}
+            {% if user.role == "Admin" %}
+                <a href="{% url 'hospitals:hospital_overview' hospital.id %}" class="btn btn-secondary">Return to Overview</a>
+            {% elif user.role == "Staff" %}
+                <a href="{% url 'accounts:staff_dashboard' %}" class="btn btn-secondary">Return to Dashboard</a>
+            {% endif %}
+        {% endif %}
+        {% if user.role == "Admin" %}
+            {% if hospital %}
+                <a href="{% url 'inventory:equipment_create' %}?hospital_id={{ hospital.id }}" class="btn btn-primary">+ Add Equipment</a>
+            {% else %}
+                <a href="{% url 'inventory:equipment_create' %}" class="btn btn-primary">+ Add Equipment</a>
+            {% endif %}
+        {% elif user.role == "Staff" %}
+            <a href="{% url 'inventory:equipment_create' %}" class="btn btn-primary">+ Add Equipment</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    {% for equip in equipment %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ equip.name }}</h5>
+                    <p class="card-text text-muted">{{ equip.description }}</p>
+                    <p><strong>Quantity:</strong> {{ equip.quantity }}</p>
+                </div>
+                {% if user.role == "Admin" %}
+                    <div class="card-footer d-flex justify-content-between">
+                        {% if hospital %}
+                            <a class="btn btn-sm btn-outline-secondary" href="{% url 'inventory:equipment_update' equip.pk %}?hospital_id={{ hospital.id }}">Edit</a>
+                            <a class="btn btn-sm btn-danger" href="{% url 'inventory:equipment_delete' equip.pk %}?hospital_id={{ hospital.id }}">Delete</a>
+                        {% else %}
+                            <a class="btn btn-sm btn-outline-secondary" href="{% url 'inventory:equipment_update' equip.pk %}">Edit</a>
+                            <a class="btn btn-sm btn-danger" href="{% url 'inventory:equipment_delete' equip.pk %}">Delete</a>
+                        {% endif %}
+                    </div>
+                {% elif user.role == "Staff" %}
+                    <div class="card-footer d-flex justify-content-between">
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'inventory:equipment_update' equip.pk %}">Edit</a>
+                        <a class="btn btn-sm btn-danger" href="{% url 'inventory:equipment_delete' equip.pk %}">Delete</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <p>No equipment available{% if hospital %} for {{ hospital.name }}{% endif %}.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

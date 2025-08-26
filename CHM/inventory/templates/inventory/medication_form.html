@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-container">
+    <h2>{{ form.instance.pk|yesno:"Edit Medication,Add Medication" }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <small class="text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                    <div class="badge danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{% url 'inventory:medication_list' %}?hospital_id={{ hospital.id }}" class="btn btn-secondary">Back to Medication List</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="confirm-container">
+    <h2>Confirm Delete</h2>
+    <p>Are you sure you want to delete "{{ equipment.name }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+
+        {% if user.role == "Admin" %}
+            <a href="{% url 'inventory:equipment_list' %}?hospital_id={{ hospital.id }}" class="btn btn-secondary">Cancel</a>
+        {% else %}
+            <a href="{% url 'inventory:equipment_list' %}" class="btn btn-secondary">Cancel</a>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

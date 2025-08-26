@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h2>
+    Medical Records
+    {% if hospital_id and user.role == "Admin" %}
+      – {{ hospital.name }}
+    {% endif %}
+  </h2>
+
+  <div class="d-flex gap-2">
+    {% if user.role == "Staff" %}
+      <a href="{% url 'accounts:staff_dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+    {% elif user.role == "Admin" %}
+      <a href="{% url 'accounts:admin_dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+    {% endif %}
+
+    {% if user.role == "Admin" or user.role == "Staff" %}
+      <a href="{% url 'patients:record_create' %}{% if user.role == 'Admin' and hospital_id %}?hospital_id={{ hospital_id }}{% endif %}" 
+         class="btn btn-primary">➕ Add Record</a>
+    {% endif %}
+  </div>
+</div>
+
+{% if records %}
+  <div class="record-list">
+    {% for record in records %}
+      <div class="record-card card">
+        <h3>{{ record.title }}</h3>
+        <p class="text-muted">{{ record.date_created|date:"M d, Y" }}</p>
+        <p><strong>Patient:</strong> {{ record.patient.user.first_name }} {{ record.patient.user.last_name }}</p>
+
+        {% if record.file %}
+          <p><strong>File:</strong> 
+            <a href="{{ record.file.url }}" download class="btn btn-outline-primary btn-sm">📄 Download</a>
+            {% if ".pdf" in record.file.url %}
+              <a href="{{ record.file.url }}" target="_blank" class="btn btn-outline-secondary btn-sm">👁 Preview PDF</a>
+            {% endif %}
+          </p>
+
+          {% if ".jpg" in record.file.url or ".jpeg" in record.file.url or ".png" in record.file.url or ".gif" in record.file.url %}
+            <img src="{{ record.file.url }}" alt="{{ record.title }}" class="img-fluid my-2">
+          {% endif %}
+        {% endif %}
+
+        <div class="action-buttons">
+          {% if user.role == "Admin" or user.role == "Staff" %}
+            <a href="{% url 'patients:record_update' record.pk %}{% if user.role == 'Admin' and hospital_id %}?hospital_id={{ hospital_id }}{% endif %}" 
+               class="btn btn-secondary btn-sm">✏ Edit</a>
+            <a href="{% url 'patients:record_delete' record.pk %}{% if user.role == 'Admin' and hospital_id %}?hospital_id={{ hospital_id }}{% endif %}" 
+               class="btn btn-danger btn-sm">🗑 Delete</a>
+          {% endif %}
+          <a href="{% url 'patients:comment_create' record.pk %}{% if user.role == 'Admin' and hospital_id %}?hospital_id={{ hospital_id }}{% endif %}" 
+             class="btn btn-primary btn-sm">💬 Add Comment</a>
+        </div>
+
+        {% if record.comments.all %}
+          <div class="comment-section">
+            <h4>Comments</h4>
+            <ul>
+              {% for comment in record.comments.all %}
+                <li>
+                  {{ comment.author }}: {{ comment.content }}
+                  {% if user.role == "Admin" or user.role == "Staff" or comment.author == user %}
+                    <a href="{% url 'patients:comment_delete' comment.pk %}{% if user.role == 'Admin' and hospital_id %}?hospital_id={{ hospital_id }}{% endif %}" 
+                       class="btn btn-danger btn-sm">❌</a>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="no-data">
+    No records found{% if hospital_id and user.role == "Admin" %} for {{ hospital.name }}{% endif %}.
+  </p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h2>Patient Dashboard{% if hospital %} – {{ hospital.name }}{% endif %}</h2>
+</div>
+
+<div class="dashboard-grid">
+  <a href="{% url 'pharmacy:medication_list' %}" class="card link-card">
+    <h3>Pharmacy</h3>
+    <p>Browse medications and purchase.</p>
+  </a>
+
+  <a href="{% url 'pharmacy:my_prescriptions' %}" class="card link-card">
+    <h3>My Prescriptions</h3>
+    <p>View active and past prescriptions.</p>
+  </a>
+
+  <a href="{% url 'pharmacy:purchase_history' %}" class="card link-card">
+    <h3>Purchase History</h3>
+    <p>See your previous medication purchases.</p>
+  </a>
+
+  <a href="{% url 'patients:my_record' %}" class="card link-card">
+    <h3>My Medical Records</h3>
+    <p>View your uploaded medical records.</p>
+  </a>
+</div>
+{% endblock %}

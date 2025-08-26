@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+    <h2>{{ patient.user.first_name }} {{ patient.user.last_name }}</h2>
+    <div>
+        {% if hospital %}
+            {% if user.role == "Admin" %}
+                <a href="{% url 'hospitals:hospital_overview' hospital.id %}" class="btn btn-secondary">Return to Overview</a>
+            {% elif user.role == "Staff" %}
+                <a href="{% url 'accounts:staff_dashboard' %}" class="btn btn-secondary">Return to Dashboard</a>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<!-- Patient Info Card -->
+<div class="card mb-4">
+    <h4 class="mb-3" style="color:#1e3a8a;">👤 Personal Information</h4>
+    <table class="styled-table">
+        <tbody>
+            <tr>
+                <th>Email</th>
+                <td>{{ patient.user.email }}</td>
+            </tr>
+            <tr>
+                <th>Date of Birth</th>
+                <td>{{ patient.date_of_birth }}</td>
+            </tr>
+            <tr>
+                <th>Gender</th>
+                <td>{{ patient.get_gender_display }}</td>
+            </tr>
+            <tr>
+                <th>Blood Type</th>
+                <td><span class="badge success">{{ patient.blood_type }}</span></td>
+            </tr>
+            <tr>
+                <th>Phone Number</th>
+                <td>{{ patient.phone_number }}</td>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <td>{{ patient.address }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Medical Info -->
+<div class="card mb-4">
+    <h4 class="mb-3" style="color:#1e3a8a;">🏥 Medical Information</h4>
+    <table class="styled-table">
+        <tbody>
+            <tr>
+                <th>Allergies</th>
+                <td>{{ patient.allergies|default:"—" }}</td>
+            </tr>
+            <tr>
+                <th>Chronic Conditions</th>
+                <td>{{ patient.chronic_conditions|default:"—" }}</td>
+            </tr>
+            <tr>
+                <th>Medications</th>
+                <td>{{ patient.medications|default:"—" }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Emergency Contact -->
+<div class="card mb-4">
+    <h4 class="mb-3" style="color:#1e3a8a;">📞 Emergency Contact</h4>
+    <table class="styled-table">
+        <tbody>
+            <tr>
+                <th>Name</th>
+                <td>{{ patient.emergency_contact_name }}</td>
+            </tr>
+            <tr>
+                <th>Number</th>
+                <td>{{ patient.emergency_contact_number }}</td>
+            </tr>
+            <tr>
+                <th>Relation</th>
+                <td>{{ patient.emergency_contact_relation }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Hospital Assignment -->
+<div class="card mb-4">
+    <h4 class="mb-3" style="color:#1e3a8a;">🏨 Hospital</h4>
+    <p><span class="badge role">{{ patient.user.hospital }}</span></p>
+</div>
+
+{% if user.role in "Admin Staff" %}
+<div class="d-flex gap-2">
+    <a href="{% url 'patients:patientprofile_update' patient.pk %}" class="btn btn-primary">✏️ Edit Profile</a>
+    <a href="{% url 'patients:patient_list' %}{% if hospital %}?hospital_id={{ hospital.id }}{% endif %}" class="btn btn-secondary">← Back to List</a>
+</div>
+{% endif %}
+{% endblock %}

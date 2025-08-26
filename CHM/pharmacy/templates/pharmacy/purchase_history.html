@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h2>Purchase History</h2>
+</div>
+
+<a href="{% url 'accounts:patient_dashboard' %}" class="btn btn-secondary mb-3">Back</a>
+
+<table class="styled-table">
+  <thead>
+    <tr>
+      <th>Medication</th>
+      <th>Quantity</th>
+      <th>Price per Unit</th>
+      <th>Total Price</th>
+      <th>Date Purchased</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in purchases %}
+      <tr>
+        <td>{{ p.medication.name }}</td>
+        <td>{{ p.quantity }}</td>
+        <td>₱{{ p.price_per_unit }}</td>
+        <td>₱{{ p.total_price }}</td>
+        <td>{{ p.date_purchased|date:"M d, Y" }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5" class="no-data">No purchase history found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

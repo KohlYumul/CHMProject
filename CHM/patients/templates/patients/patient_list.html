@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        Patients
+        {% if hospital %} – {{ hospital.name }}{% endif %}
+    </h2>
+
+    <div class="d-flex gap-2">
+        {% if hospital %}
+            {% if user.role == "Admin" %}
+                <a href="{% url 'hospitals:hospital_overview' hospital.id %}" class="btn btn-secondary">Return to Overview</a>
+            {% elif user.role == "Staff" %}
+                <a href="{% url 'accounts:staff_dashboard' %}" class="btn btn-secondary">Return to Dashboard</a>
+            {% endif %}
+        {% endif %}
+
+        {% if user.role in "Admin Staff" %}
+            <a href="{% url 'patients:patientprofile_create' %}{% if hospital %}?hospital_id={{ hospital.id }}{% endif %}" class="btn btn-primary">+ Add Patient</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    {% for patient in patients %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ patient.user.first_name }} {{ patient.user.last_name }}</h5>
+                    <p class="card-text"><strong>Email:</strong> {{ patient.user.email }}</p>
+                    <p class="card-text"><strong>Date of Birth:</strong> {{ patient.date_of_birth }}</p>
+                    <p class="card-text"><strong>Gender:</strong> {{ patient.gender }}</p>
+                    <p class="card-text"><strong>Hospital:</strong> {{ patient.user.hospital }}</p>
+                </div>
+
+                {% if user.role in "Admin Staff" %}
+                    <div class="card-footer d-flex justify-content-between">
+                        {% if hospital %}
+                            <a href="{% url 'patients:patientprofile_update' patient.pk %}?hospital_id={{ hospital.id }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            <a href="{% url 'patients:patient_detail' patient.pk %}?hospital_id={{ hospital.id }}" class="btn btn-sm btn-primary">View</a>
+                        {% else %}
+                            <a href="{% url 'patients:patientprofile_update' patient.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            <a href="{% url 'patients:patient_detail' patient.pk %}" class="btn btn-sm btn-primary">View</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <p>No patients available{% if hospital %} for {{ hospital.name }}{% endif %}.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

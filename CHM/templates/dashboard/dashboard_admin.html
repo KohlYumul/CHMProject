@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+    <h2>🏥 Admin Dashboard</h2>
+</div>
+
+<!-- Hospitals Section -->
+<h3>🏥 Hospitals</h3>
+<div class="dashboard-grid">
+    {% for hospital in hospitals %}
+        <div class="card link-card hospital-card">
+            <!-- Hospital Info -->
+            <a href="{% url 'hospitals:hospital_overview' hospital.pk %}" class="hospital-link">
+                <h3>{{ hospital.name }}</h3>
+                <p class="text-muted">{{ hospital.address }}</p>
+            </a>
+
+            <!-- Toggle Button -->
+            <button type="button" class="btn btn-secondary btn-sm toggle-users" data-hospital="{{ hospital.id }}">
+                Show Recent Users
+            </button>
+
+            <!-- Hidden Dropdown -->
+            <div id="users-{{ hospital.id }}" class="recent-users" style="display: none; margin-top: 10px;">
+                <h4>👤 Recent Users</h4>
+                {% if hospital.recent_users %}
+                    <ul class="user-list">
+                        {% for user in hospital.recent_users %}
+                            <li>
+                                <a href="{% url 'accounts:profile_edit' user.pk %}" class="user-link">
+                                    {{ user.email }}
+                                    <span class="badge role">{{ user.role }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="no-data">No users yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <p class="no-data">No hospitals found.</p>
+    {% endfor %}
+</div>
+
+<hr class="section-divider">
+
+<!-- Admin Actions -->
+<h3>⚙️ Admin Actions</h3>
+<div class="dashboard-grid">
+    <a href="{% url 'hospitals:hospital_create' %}" class="card link-card action-card">
+        <h3>➕ Add Hospital</h3>
+        <p>Create a new hospital in the system.</p>
+    </a>
+    <a href="{% url 'accounts:create_admin_or_staff' %}" class="card link-card action-card">
+        <h3>Create Admin/Staff</h3>
+        <p>Add new admin or staff members.</p>
+    </a>
+    <a href="{% url 'accounts:create_patient' %}" class="card link-card action-card">
+        <h3>Create Patient</h3>
+        <p>Add new patient members.</p>
+    </a>
+</div>
+
+<!-- Toggle Script -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".toggle-users").forEach(button => {
+        button.addEventListener("click", function(e) {
+            e.preventDefault();
+            const target = document.getElementById("users-" + this.dataset.hospital);
+            if (target.style.display === "none") {
+                target.style.display = "block";
+                this.textContent = "Hide Recent Users";
+            } else {
+                target.style.display = "none";
+                this.textContent = "Show Recent Users";
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h2>Add Comment</h2>
+</div>
+
+<div class="form-container">
+  <form method="post">
+    {% csrf_token %}
+    
+    <div class="form-group">
+      {{ form.content.label_tag }}
+      {{ form.content }}
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">💬 Post Comment</button>
+      <a href="{% if user.role == 'Patient' %}
+                  {% url 'patients:my_record' %}
+                {% else %}
+                  {% url 'patients:record_list' %}?hospital_id={{ user.hospital.id }}
+                {% endif %}" 
+         class="btn btn-secondary">← Back to Records</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

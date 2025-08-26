@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h2>Staff Dashboard{% if hospital %} – {{ hospital.name }}{% endif %}</h2>
+</div>
+
+<div class="dashboard-grid">
+  <a href="{% url 'inventory:medication_list' %}" class="card link-card">
+    <h3>Medications</h3>
+    <p>View and manage medication stock.</p>
+  </a>
+
+  <a href="{% url 'inventory:supply_list' %}" class="card link-card">
+    <h3>Medical Supplies</h3>
+    <p>Manage supplies.</p>
+  </a>
+
+  <a href="{% url 'inventory:equipment_list' %}" class="card link-card">
+    <h3>Equipment</h3>
+    <p>Manage equipment details.</p>
+  </a>
+
+  <a href="{% url 'pharmacy:prescribe_medication' %}" class="card link-card">
+    <h3>Prescribe Medication</h3>
+    <p>Issue prescriptions to patients.</p>
+  </a>
+
+  <a href="{% url 'reports:report_list' %}" class="card link-card">
+    <h3>View Reports</h3>
+    <p>Access and manage reports.</p>
+  </a>
+
+  <a href="{% url 'patients:record_list' %}" class="card link-card">
+    <h3>View Patient Records</h3>
+    <p>Access and manage patient records.</p>
+  </a>
+
+  <a href="{% url 'patients:patient_list' %}" class="card link-card">
+    <h3>View Patients</h3>
+    <p>Access and manage patient information.</p>
+  </a>
+</div>
+{% endblock %}

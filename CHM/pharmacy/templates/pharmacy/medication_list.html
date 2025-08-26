@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h2>Available Over-the-Counter Medications{% if hospital %} – {{ hospital.name }}{% endif %}</h2>
+</div>
+
+<a href="{% url 'accounts:patient_dashboard' %}" class="btn btn-secondary mb-3">Back</a>
+
+<table class="styled-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Stock</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for med in medications %}
+      <tr>
+        <td>{{ med.name }}</td>
+        <td>{{ med.description }}</td>
+        <td>{{ med.quantity }}</td>
+        <td>
+          {% if med.quantity > 0 %}
+            {% if user.role == "Patient" %}
+              <a href="{% url 'pharmacy:buy_medication' med.id %}" class="btn btn-sm btn-primary">Buy</a>
+            {% else %}
+              {% if med.prescription_required %}
+                <span class="badge bg-warning text-dark">Prescription required</span>
+              {% endif %}
+            {% endif %}
+          {% else %}
+            <span class="badge bg-danger">Out of Stock</span>
+          {% endif %}
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="4" class="no-data">No over-the-counter medications available.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

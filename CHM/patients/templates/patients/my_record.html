@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h2>My Medical Records</h2>
+  <a href="{% url 'accounts:patient_dashboard' %}" class="btn btn-secondary float-right">← Back to Dashboard</a>
+</div>
+
+{% if records %}
+  <div class="record-list">
+    {% for record in records %}
+      <div class="record-card card">
+        <h3>{{ record.title }}</h3>
+        <p class="text-muted">{{ record.date_created|date:"M d, Y" }}</p>
+
+        <div class="record-actions">
+          {% if record.file %}
+            <a href="{{ record.file.url }}" class="btn btn-secondary btn-sm">📄 View File</a>
+          {% endif %}
+          <a href="{% url 'patients:comment_create' record.pk %}" class="btn btn-primary btn-sm">💬 Add Comment</a>
+        </div>
+
+        {% if record.comments.all %}
+          <div class="comment-section">
+            <h4>Comments</h4>
+            <ul>
+              {% for comment in record.comments.all %}
+                <li>
+                  {{ comment.author }}: {{ comment.content }}
+                  {% if comment.author == user %}
+                    <a href="{% url 'patients:comment_delete' comment.pk %}" class="btn btn-danger btn-sm">❌</a>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="no-data">No medical records found.</p>
+{% endif %}
+{% endblock %}
