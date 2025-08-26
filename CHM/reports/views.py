@@ -52,9 +52,10 @@ def report_create(request):
         if form.is_valid():
             report = form.save(commit=False)
             report.hospital = hospital
-            report.generated_by = request.user
+            report.generated_by = request.user  # ✅ auto-assign
             report.save()
             messages.success(request, "Report created successfully.")
+
             if request.user.role == "Admin":
                 return redirect(f"{reverse('reports:report_list')}?hospital_id={hospital.id}")
             return redirect('reports:report_list')
@@ -67,9 +68,6 @@ def report_create(request):
     })
 
 
-# =======================
-# REPORT UPDATE
-# =======================
 @role_required('Admin', 'Staff')
 def report_update(request, pk):
     report = get_object_or_404(Report, pk=pk)
@@ -85,18 +83,22 @@ def report_update(request, pk):
         if hospital_id:
             hospital = get_object_or_404(Hospital, id=hospital_id)
         else:
-            hospital = report.hospital
+            hospital = report.hospital  # fallback
 
     if request.method == 'POST':
         form = ReportForm(request.POST, request.FILES, instance=report)
         if form.is_valid():
             updated_report = form.save(commit=False)
-            updated_report.hospital = hospital  # ensure hospital is preserved
+            updated_report.hospital = hospital
+            updated_report.generated_by = request.user  # ✅ ensure always set
             updated_report.save()
-            # Redirect back to report list, preserving hospital context for admin
-            if request.user.role == 'Admin' and hospital:
+            messages.success(request, "Report updated successfully.")
+
+            if request.user.role == 'Admin':
                 return redirect(f"{reverse('reports:report_list')}?hospital_id={hospital.id}")
             return redirect('reports:report_list')
+        else:
+            print(form.errors)
     else:
         form = ReportForm(instance=report)
 
@@ -104,6 +106,7 @@ def report_update(request, pk):
         'form': form,
         'hospital': hospital
     })
+
 
 
 # =======================
