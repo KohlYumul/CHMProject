@@ -33,7 +33,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ med.name }}</h5>
                     <p class="card-text text-muted">{{ med.description }}</p>
-                    <p><strong>Stock:</strong> {{ med.quantity }} · ₱{{ med.price }}</p>
+                    <p><strong>Stock:</strong> {{ med.quantity }} {{ med.unit }} · ₱{{ med.price }}</p>
                     <p>
                         {% if med.prescription_required %}
                             <span class="badge bg-warning text-dark">Prescription Required</span>
