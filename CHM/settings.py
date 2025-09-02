@@ -148,25 +148,36 @@ SECURE_FRAME_DENY               = True
 import environ
 import os
 
-# Initialise environment
 env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))  # loads .env locally
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME", default="ap-southeast-2")
 
-AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.ap-southeast-2.amazonaws.com"
+AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com"
+
+# Custom storage backends
+from storages.backends.s3boto3 import S3Boto3Storage
+
+class StaticStorage(S3Boto3Storage):
+    location = "static"
+    default_acl = "public-read"
+
+class MediaStorage(S3Boto3Storage):
+    location = "media"
+    file_overwrite = False
+    default_acl = "public-read"
+
+STORAGES = {
+    "default": {  # User uploads
+        "BACKEND": "path.to.settings.MediaStorage",
+    },
+    "staticfiles": {  # Collectstatic files
+        "BACKEND": "path.to.settings.StaticStorage",
+    },
+}
 
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
 MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
-
-STORAGES = {
-    "default": {
-        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-    },
-
-    "staticfiles": {
-        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
-    },
-}
