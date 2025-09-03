@@ -26,9 +26,8 @@
   <div class="record-list">
     {% for record in records %}
       <div class="record-card card">
-        <h3>{{ record.title }}</h3>
-        <p class="text-muted">{{ record.date_created|date:"M d, Y" }}</p>
-        <p><strong>Patient:</strong> {{ record.patient.user.first_name }} {{ record.patient.user.last_name }}</p>
+        <h3>Record for {{ record.patient.user.first_name }} {{ record.patient.user.last_name }}</h3>
+        <p class="text-muted">{{ record.record_date|date:"M d, Y" }}</p>
         <p><strong>Description:</strong> {{ record.description }}</p>
 
         {% if record.file %}
